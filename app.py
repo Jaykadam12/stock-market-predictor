@@ -252,4 +252,5 @@ def delete_alert(alert_id):
     return redirect(url_for('view_alerts'))
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))  # Get Railway's assigned port
+    app.run(host="0.0.0.0", port=port, debug=True)
