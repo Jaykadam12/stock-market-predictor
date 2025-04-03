@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Prediction Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #0ea5e9;
+            --accent-color: #7c3aed;
+            --text-color: #1e293b;
+            --gradient: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            --section-spacing: 4rem;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: #f8fafc;
+            color: var(--text-color);
+            min-height: 100vh;
+        }
+
+        /* Premium Navbar */
+        .navbar {
+            background: var(--gradient);
+            padding: 1.5rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+        }
+
+        .nav-links a {
+            color: rgba(255,255,255,0.9);
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: white;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Prediction Hero Section */
+        .prediction-hero {
+            padding: 12rem 2rem 4rem;
+            text-align: center;
+            background: var(--gradient);
+            color: white;
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        /* Prediction Form */
+        .prediction-form {
+            max-width: 600px;
+            margin: 2rem auto;
+            position: relative;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-color);
+            z-index: 1;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 1.2rem 1.5rem 1.2rem 4rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            background: white;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .analyze-btn {
+            background: white;
+            color: var(--primary-color);
+            padding: 1.2rem 3rem;
+            border-radius: 12px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .analyze-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        /* Results Cards */
+        .results-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: grid;
+            gap: 2rem;
+        }
+
+        .data-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
+        }
+
+        .data-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .price-display {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .price-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .prediction-badge {
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            font-weight: 600;
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .prediction-badge.negative {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* Chart Container */
+        .chart-container {
+            height: 600px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            margin: 2rem 0;
+            background: white;
+        }
+
+        /* Alert Form */
+        .alert-form {
+            display: grid;
+            gap: 1.5rem;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--gradient);
+                padding: 1rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .hero-title {
+                font-size: 2.2rem;
+            }
+
+            .price-value {
+                font-size: 2rem;
+            }
+
+            .chart-container {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Premium Navbar -->
+   <nav class="navbar">
+        <div class="logo">
+            <i class="fas fa-chart-line" aria-hidden="true"></i>
+            StockPro
+        </div>
+        <div class="nav-links">
+            <a style="font-weight: bold; font-size: 1.2rem;" href="/" aria-current="page">Home</a>
+            <a style="font-weight: bold; font-size: 1.2rem;" href="/predict">Predictions</a>
+            <a style="font-weight: bold; font-size: 1.2rem;" href="/alerts">Alerts</a>
+        </div>
+    </nav>
+
+    <!-- Prediction Hero -->
+    <section class="prediction-hero">
+        <h1 class="hero-title">AI-Powered Stock Predictions</h1>
+        <p>Advanced machine learning models for accurate market forecasts</p>
+        
+        <form method="POST" class="prediction-form">
+            <div class="input-group">
+                <i class="fas fa-chart-bar"></i>
+                <input type="text" name="stock_name" placeholder="Enter stock symbol (e.g., AAPL)" required>
+            </div>
+            <button type="submit" class="analyze-btn">
+                <i class="fas fa-magic"></i>
+                Analyze Now
+            </button>
+        </form>
+    </section>
+
+    <!-- Results Container -->
+    <div class="results-container">
+        {% if latest_price %}
+        <div class="data-card">
+            <div class="price-display">
+                <div>
+                    <h3>Current Price</h3>
+                    <p class="price-value">${{ latest_price }}</p>
+                </div>
+                <i class="fas fa-coins fa-2x"></i>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if predictions %}
+        <div class="data-card">
+            <h2>{{ prediction_text }}</h2>
+            <div class="price-display" style="margin-top: 1.5rem;">
+                <div>
+                    <h3>Predicted Change</h3>
+                    <span class="prediction-badge {{ 'positive' if predictions.prediction|float > 0 else 'negative' }}">
+                        {{ predictions.prediction }}%
+                    </span>
+                </div>
+                <i class="fas fa-chart-line fa-2x"></i>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if chart_html %}
+        <div class="chart-container">
+            {{ chart_html | safe }}
+        </div>
+        {% endif %}
+
+        <!-- Alert Form -->
+        {% if stock_symbol %}
+        <div class="data-card">
+            <h2>Set Price Alert</h2>
+            <form action="/set_alert" method="POST" class="alert-form">
+                <div class="input-group">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" name="email" placeholder="Your email address" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-bullseye"></i>
+                    <input type="number" step="0.01" name="target_price" 
+                           placeholder="Target price" required>
+                </div>
+                <input type="hidden" name="stock_symbol" value="{{ stock_symbol }}">
+                <button type="submit" class="analyze-btn">
+                    <i class="fas fa-bell"></i>
+                    Create Alert
+                </button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        // Mobile Menu Toggle
+        document.querySelector('.mobile-menu-btn').addEventListener('click', () => {
+            document.querySelector('.nav-links').classList.toggle('active');
+        });
+
+        // TradingView Widget Initialization
+        new TradingView.widget({
+            "autosize": true,
+            "symbol": "NASDAQ:AAPL",
+            "interval": "D",
+            "timezone": "Etc/UTC",
+            "theme": "light",
+            "style": "1",
+            "locale": "en",
+            "toolbar_bg": "#f1f3f6",
+            "enable_publishing": false,
+            "hide_side_toolbar": false,
+            "allow_symbol_change": true,
+            "container_id": "tradingview_widget"
+        });
+    </script>
+    
+    <!-- Chat Integration -->
+    <script src="https://cdn.botpress.cloud/webchat/v2.1/inject.js"></script>
+    <script src="https://mediafiles.botpress.cloud/839329ae-2871-4510-ad69-8dbb47f4d51a/webchat/v2.1/config.js"></script>
+</body>
+</html>

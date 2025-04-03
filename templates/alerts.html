@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StockPro - Alerts</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #0ea5e9;
+            --accent-color: #7c3aed;
+            --text-color: #1e293b;
+            --gradient: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: var(--text-color);
+        }
+
+        /* Navbar */
+        .navbar {
+            background: var(--gradient);
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+        }
+
+        .nav-links a {
+            color: rgba(255,255,255,0.9);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+
+        /* Alerts Container */
+        .alerts-container {
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+        }
+
+        .alerts-card {
+            background: white;
+            border-radius: 16px;
+            padding: 3rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+
+        .section-subtitle {
+            color: #64748b;
+            font-size: 1.1rem;
+        }
+
+        /* Alerts List */
+        .alerts-list {
+            margin-top: 2rem;
+        }
+
+        .alert-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            transition: background 0.2s ease;
+        }
+
+        .alert-item:hover {
+            background: #f8fafc;
+        }
+
+        .alert-info {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .stock-symbol {
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+        }
+
+        .delete-btn {
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .delete-btn:hover {
+            background: #fecaca;
+            transform: translateY(-1px);
+        }
+
+        .no-alerts {
+            text-align: center;
+            padding: 4rem;
+            color: #64748b;
+        }
+
+        .create-alert-btn {
+            background: var(--gradient);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            transition: transform 0.2s ease;
+            margin-top: 2rem;
+        }
+
+        .create-alert-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem;
+            }
+
+            .nav-links {
+                gap: 1.5rem;
+            }
+
+            .alerts-card {
+                padding: 2rem;
+            }
+
+            .alert-item {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+     <nav class="navbar">
+        <div class="logo">
+            <i class="fas fa-chart-line" aria-hidden="true"></i>
+            StockPro
+        </div>
+        <div class="nav-links">
+            <a style="font-weight: bold; font-size: 1.2rem;" href="/" aria-current="page">Home</a>
+            <a style="font-weight: bold; font-size: 1.2rem;" href="/predict">Predictions</a>
+            <a style="font-weight: bold; font-size: 1.2rem;" href="/alerts">Alerts</a>
+        </div>
+    </nav>
+
+
+    <!-- Alerts Content -->
+    <div class="alerts-container">
+        <div class="alerts-card">
+            <div class="section-header">
+                <h1 class="section-title">Your Price Alerts</h1>
+                <p class="section-subtitle">Manage your active stock price alerts</p>
+            </div>
+
+            {% if alerts %}
+            <div class="alerts-list">
+                {% for alert in alerts %}
+                <div class="alert-item">
+                    <div class="alert-info">
+                        <span class="stock-symbol">{{ alert.stock_symbol }}</span>
+                        <span>Target: ${{ "%.2f"|format(alert.target_price) }}</span>
+                        <span>Created: {{ alert.created_at.strftime('%b %d, %Y') }}</span>
+                    </div>
+                    <a href="/delete_alert/{{ alert.id }}" class="delete-btn">
+                        <i class="fas fa-trash-alt"></i>
+                        Delete
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="no-alerts">
+                <p>No active alerts found 🎉</p>
+                <a href="/predict" class="create-alert-btn">
+                    <i class="fas fa-bell"></i>
+                    Create New Alert
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+  <script src="https://cdn.botpress.cloud/webchat/v2.1/inject.js"></script>
+    <script src="https://mediafiles.botpress.cloud/839329ae-2871-4510-ad69-8dbb47f4d51a/webchat/v2.1/config.js"></script>
+</html>

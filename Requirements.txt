@@ -1,0 +1,11 @@
+flask
+yfinance
+pandas
+numpy
+matplotlib
+scikit-learn
+joblib
+flask-sqlalchemy
+apscheduler
+flask-mail
+python-dotenv
