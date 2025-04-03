@@ -252,6 +252,6 @@ def delete_alert(alert_id):
     return redirect(url_for('view_alerts'))
 
 if __name__ == "__main__":
-    port = int(os.getenv("PORT", "5000"))  # Use getenv to avoid errors
-    print(f"🚀 Running on 0.0.0.0:{port}")  # Debugging statement
-    app.run(host="0.0.0.0", port=port)
+    port = int(os.getenv("PORT", "5000"))  # Default to 5000 if not found
+    print(f"🚀 Server starting on http://0.0.0.0:{port}")  # Debugging output
+    app.run(host="0.0.0.0", port=port, debug=False)
